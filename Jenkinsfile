@@ -1,8 +1,8 @@
 pipeline{
     agent any
       environment {
-     scannerHome = tool 'Sonar-scanner'
-   }
+        scannerHome = tool 'Sonar-scanner'
+      }
     tools{
         maven 'maven_354'
     }
@@ -12,18 +12,17 @@ pipeline{
                 git 'https://github.com/jglick/simple-maven-project-with-tests'
             }    
         }
-        stage('build'){
+        stage('stage-1'){
             steps{
-                sh 'mvn install'
+                sh 'mvn clean package'
             }    
         }
-        stage('Sonar'){
+        stage('stage-2'){
             steps{
-            withSonarQubeEnv('Sonar') {
-                sh '${scannerHome}/bin/sonar-scanner -Dsonar.java.binaries=target/* -Dsonar.projectKey=xlaguarda -Dsonar.sources=.' 
-            
+            archive 'target/surefire-reports/*'
+            archive 'target/*.jar'    
+            }
         }
     }
 }
-}
-}
+
